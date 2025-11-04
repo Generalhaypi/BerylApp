@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Béryl Super-App – Auth</title>
+</head>
+<body>
+  <h1>Connexion à Béryl Super-App</h1>
+
+  <div id="auth-section">
+    <h3>Connexion par e-mail</h3>
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Mot de passe">
+    <button id="signup">Créer un compte</button>
+    <button id="login">Se connecter</button>
+
+    <h3>Ou</h3>
+    <button id="google-login">Connexion avec Google</button>
+  </div>
+
+  <div id="user-section" style="display:none;">
+    <h2 id="welcome"></h2>
+    <button id="logout">Se déconnecter</button>
+  </div>
+
+  <script type="module">
+    import { auth, provider } from "./firebase.js";
+    import { 
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      signInWithPopup,
+      signOut,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    // --- Sélection des éléments HTML ---
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+    const signupBtn = document.getElementById("signup");
+    const loginBtn = document.getElementById("login");
+    const googleBtn = document.getElementById("google-login");
+    const logoutBtn = document.getElementById("logout");
+    const welcome = document.getElementById("welcome");
+    const authSection = document.getElementById("auth-section");
+    const userSection = document.getElementById("user-section");
+
+    // --- Inscription Email ---
+    signupBtn.addEventListener("click", async () => {
+      try {
+        await createUserWithEmailAndPassword(auth, emailInput.value, passwordInput.value);
+        alert("Compte créé avec succès !");
+      } catch (error) {
+        alert("Erreur : " + error.message);
+      }
+    });
+
+    // --- Connexion Email ---
+    loginBtn.addEventListener("click", async () => {
+      try {
+        await signInWithEmailAndPassword(auth, emailInput.value, passwordInput.value);
+        alert("Connexion réussie !");
+      } catch (error) {
+        alert("Erreur : " + error.message);
+      }
+    });
+
+    // --- Connexion Google ---
+    googleBtn.addEventListener("click", async () => {
+      try {
+        await signInWithPopup(auth, provider);
+        alert("Connexion Google réussie !");
+      } catch (error) {
+        alert("Erreur : " + error.message);
+      }
+    });
+
+    // --- Déconnexion ---
+    logoutBtn.addEventListener("click", async () => {
+      await signOut(auth);
+    });
+
+    // --- Surveillance de l’état utilisateur ---
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        authSection.style.display = "none";
+        userSection.style.display = "block";
+        welcome.innerText = `Bienvenue ${user.email}`;
+      } else {
+        authSection.style.display = "block";
+        userSection.style.display = "none";
+      }
+    });
+  </script>
+</body>
+</html>
+<input id="email" type="email" placeholder="Email">
+<input id="pwd" type="password" placeholder="Mot de passe">
+<button id="btnSignup">Créer un compte</button>
+<button id="btnLogin">Se connecter</button>
+
+<hr>
+<button id="btnGoogle">Connexion avec Google</button>
+
+<p id="status"></p>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+  const firebaseConfig = {/* colle ici exactement ce que la console fournit */};
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  // branche tes boutons...
+</script>
